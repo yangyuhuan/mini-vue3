@@ -1,8 +1,8 @@
 /**
- * all
+ * any
  * 接收一个promise数组,数组中如有非promise项,则此项当做成功
- * 如果所有promise都成功,则返回成功结果数组
- * 如果一个promise失败,则返回这个失败结果
+ * 如果有一个Promise成功，则返回这个成功结果
+ * 如果所有Promise都失败，则报错
  */
 class MyPromise{
     //构造方法
@@ -140,17 +140,81 @@ class MyPromise{
 
     }
 
+    static race(promises) {
+        return new MyPromise((resolve, reject) => {
+            promises.forEach(promise => {
+                if (promise instanceof MyPromise) {
+                    promise.then(res => {
+                        resolve(res)
+                    }, err => {
+                        reject(err)
+                    })
+                } else {
+                    resolve(promise)
+                }
+            })
+        })
+    }
+
+    static allSettled(promises){
+        return new MyPromise((resolve, reject) => {
+            const res = []
+            let count = 0
+            const addData = (status,value,i) => {
+                res[i] = {
+                    status,
+                    value
+                }
+
+                count++
+                if(count === promises.length){
+                    resolve(res)
+                }
+            }
+
+            promises.forEach((promise, i) => {
+                if(promise instanceof MyPromise){
+                    promise.then(res => {
+                        addData('fulfilled',res, i)
+                    }, err=> {
+                        addData('rejected',err,i)
+                    })
+                }else{
+                    addData('fulfilled',promise,i)
+                }
+            })
+        })
+    }
+
+    static any(promises){
+        return new MyPromise((resolve,reject) => {
+            let count = 0 
+            promises.forEach((promise) => {
+                promise.then(val =>{
+                    resolve(val)
+                }, err => {
+                    count++
+                    if(count === promises.length){
+                        reject('All promises were rejected')
+                    }
+                })
+            })
+
+        })
+    }
 }
 
 
 const promise1 = new MyPromise((resolve, reject) => {
     setTimeout(resolve, 10, 'foo1');
   });;
-const promise2 = 'foo2';
-const promise3 = new MyPromise((resolve, reject) => {
+const promise2 = new MyPromise((resolve, reject) => {
   setTimeout(resolve, 100, 'foo3');
 });
 
-MyPromise.all([promise1, promise2, promise3]).then((values) => {
+MyPromise.any([promise1, promise2]).then((values) => {
   console.log(values);
 });
+
+
+  

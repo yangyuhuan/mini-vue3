@@ -1,9 +1,8 @@
 /**
- * all
- * 接收一个promise数组,数组中如有非promise项,则此项当做成功
- * 如果所有promise都成功,则返回成功结果数组
- * 如果一个promise失败,则返回这个失败结果
- */
+ * race
+ * 接收一个Promise数组，数组中如有非Promise项，则此项当做成功 Takes an array of promises, and if there is a non-Promise item in the array, the item is considered successful
+ * 哪个Promise最快得到结果，就返回那个结果，无论成功失败
+*/
 class MyPromise{
     //构造方法
     constructor(executor){
@@ -166,6 +165,6 @@ const promise3 = new MyPromise((resolve, reject) => {
   setTimeout(resolve, 100, 'foo3');
 });
 
-Promise.race([promise1, promise2, promise3]).then((values) => {
+MyPromise.race([promise1, promise2, promise3]).then((values) => {
   console.log(values);
 });

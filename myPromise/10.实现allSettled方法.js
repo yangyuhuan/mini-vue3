@@ -1,8 +1,7 @@
 /**
- * all
- * 接收一个promise数组,数组中如有非promise项,则此项当做成功
- * 如果所有promise都成功,则返回成功结果数组
- * 如果一个promise失败,则返回这个失败结果
+ * allSettled
+ * 接收一个Promise数组，数组中如有非Promise项，则此项当做成功 
+ * 把每一个Promise的结果，集合成数组，返回
  */
 class MyPromise{
     //构造方法
@@ -140,6 +139,51 @@ class MyPromise{
 
     }
 
+    static race(promises) {
+        return new MyPromise((resolve, reject) => {
+            promises.forEach(promise => {
+                if (promise instanceof MyPromise) {
+                    promise.then(res => {
+                        resolve(res)
+                    }, err => {
+                        reject(err)
+                    })
+                } else {
+                    resolve(promise)
+                }
+            })
+        })
+    }
+
+    static allSettled(promises){
+        return new MyPromise((resolve, reject) => {
+            const res = []
+            let count = 0
+            const addData = (status,value,i) => {
+                res[i] = {
+                    status,
+                    value
+                }
+
+                count++
+                if(count === promises.length){
+                    resolve(res)
+                }
+            }
+
+            promises.forEach((promise, i) => {
+                if(promise instanceof MyPromise){
+                    promise.then(res => {
+                        addData('fulfilled',res, i)
+                    }, err=> {
+                        addData('rejected',err,i)
+                    })
+                }else{
+                    addData('fulfilled',promise,i)
+                }
+            })
+        })
+    }
 }
 
 
@@ -151,6 +195,6 @@ const promise3 = new MyPromise((resolve, reject) => {
   setTimeout(resolve, 100, 'foo3');
 });
 
-MyPromise.all([promise1, promise2, promise3]).then((values) => {
+MyPromise.allSettled([promise1, promise2, promise3]).then((values) => {
   console.log(values);
 });
