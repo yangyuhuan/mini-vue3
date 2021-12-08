@@ -24,6 +24,7 @@ function Scheduler() {
 }
 
 function timeout(time){
+  console.log("执行",time)
   return new Promise(resolve => {
       setTimeout(resolve, time);
   });
