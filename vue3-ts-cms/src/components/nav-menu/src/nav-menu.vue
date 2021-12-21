@@ -4,8 +4,9 @@
       <img class="img" src="~@/assets/img/logo.svg" alt="logo" />
       <span v-if="!collapse" class="title">Vue3+TS</span>
     </div>
+
     <el-menu
-      default-active="2"
+      :default-active="defaultValue"
       class="el-menu-vertical"
       :collapse="collapse"
       background-color="#0c2135"
@@ -46,21 +47,39 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, ref } from 'vue'
 import { useStore } from '@/store'
-import router from '@/router'
+// import router from '@/router'
+import { useRouter, useRoute } from 'vue-router'
+
+import { pathMapToMenu } from '@/utils/map-menus'
+
 export default defineComponent({
+  props: {
+    collapse: {
+      type: Boolean,
+      default: false
+    }
+  },
   setup() {
     const store = useStore()
     const userMenus = computed(() => store.state.login.userMenus)
+
+    // console.log(router)
+    const router = useRouter()
+    const route = useRoute()
     const handleMenuItemClick = (item: any) => {
       router.push({
         path: item.url ?? '/not-found'
       })
     }
+
+    const menu = pathMapToMenu(userMenus.value, route.path)
+    const defaultValue = ref(menu.id + '')
     return {
       userMenus,
-      handleMenuItemClick
+      handleMenuItemClick,
+      defaultValue
     }
   }
 })
