@@ -7,7 +7,13 @@
       v-model:page="pageInfo"
     >
       <template #headerHandler>
-        <el-button type="primary" size="medium">新建用户</el-button>
+        <el-button
+          v-if="isCreate"
+          type="primary"
+          size="medium"
+          @click="handleNewClick"
+          >新建用户</el-button
+        >
       </template>
 
       <template #status="scope">
@@ -24,12 +30,22 @@
       <template #updateAt="scope">
         <span>{{ $filters.formatTime(scope.row.updateAt) }}</span>
       </template>
-      <template #handler>
+      <template #handler="scope">
         <div class="handle-btns">
-          <el-button icon="el-icon-edit" size="mini" type="text"
+          <el-button
+            v-if="isUpdate"
+            icon="el-icon-edit"
+            size="mini"
+            type="text"
+            @click="handleEditClick(scope.row)"
             >编辑</el-button
           >
-          <el-button icon="el-icon-delete" size="mini" type="text"
+          <el-button
+            v-if="isDelete"
+            icon="el-icon-delete"
+            size="mini"
+            type="text"
+            @click="handleDeleteClick(scope.row)"
             >删除</el-button
           >
         </div>
@@ -62,14 +78,14 @@ export default defineComponent({
   props: {
     contentTableConfig: {
       type: Object,
-      require: true
+      required: true
     },
     pageName: {
       type: String,
       required: true
     }
   },
-  setup(props) {
+  setup(props, { emit }) {
     const store = useStore()
     ///0.获取操作的权限
     const isCreate = usePermission(props.pageName, 'create')
@@ -101,7 +117,7 @@ export default defineComponent({
     const dataCount = computed(() =>
       store.getters[`system/pageListCount`](props.pageName)
     )
-    // // 4.获取其他的动态插槽名称
+    // 4.获取其他的动态插槽名称
     const otherPropSlots = props.contentTableConfig?.propList.filter(
       (item: any) => {
         if (item.slotName === 'status') return false
@@ -112,6 +128,22 @@ export default defineComponent({
       }
     )
 
+    //5.删除/编辑/新建操作
+    const handleDeleteClick = (item: any) => {
+      store.dispatch('system/deletePageDataAction', {
+        pageName: props.pageName,
+        id: item.id
+      })
+    }
+
+    const handleNewClick = () => {
+      emit('newBtnClick')
+    }
+
+    const handleEditClick = (item: any) => {
+      emit('editBtnClick', item)
+    }
+
     return {
       dataList,
       dataCount,
@@ -120,7 +152,10 @@ export default defineComponent({
       otherPropSlots,
       isCreate,
       isUpdate,
-      isDelete
+      isDelete,
+      handleDeleteClick,
+      handleNewClick,
+      handleEditClick
     }
   }
 })
