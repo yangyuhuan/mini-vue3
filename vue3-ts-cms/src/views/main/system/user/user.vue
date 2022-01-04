@@ -84,6 +84,7 @@ export default defineComponent({
     // 3.调用hook获取公共变量和函数
     const [pageModalRef, defaultInfo, handleNewData, handleEditData] =
       usePageModal(newCallFn, editCallFn)
+    console.log(defaultInfo)
     return {
       searchFormConfig,
       contentTableConfig,
