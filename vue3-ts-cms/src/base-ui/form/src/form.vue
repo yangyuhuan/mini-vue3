@@ -1,10 +1,14 @@
 <template>
   <div class="hy-form">
+    <div class="header">
+      <slot name="header"></slot>
+    </div>
     <el-form :label-width="labelWidth">
       <el-row>
         <template v-for="item in formItems" :key="item.label">
           <el-col v-bind="colLayout">
             <el-form-item
+              v-if="!item.isHidden"
               :label="item.label"
               :rules="item.rules"
               :style="itemStyle"
@@ -46,6 +50,9 @@
         </template>
       </el-row>
     </el-form>
+    <div class="footer">
+      <slot name="footer"></slot>
+    </div>
   </div>
 </template>
 
@@ -83,12 +90,15 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    console.log(props.modelValue)
     const formData = ref({ ...props.modelValue })
-    watch(formData, (newValue) => {
-      console.log(newValue)
-      emit('update:modelValue', newValue)
-    })
+    watch(
+      formData,
+      (newValue) => {
+        console.log(newValue)
+        emit('update:modelValue', newValue)
+      },
+      { deep: true }
+    )
     return {
       formData
     }
