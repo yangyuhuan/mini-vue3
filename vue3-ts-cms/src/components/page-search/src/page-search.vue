@@ -31,6 +31,18 @@ export default defineComponent({
       required: true
     }
   },
+<<<<<<< HEAD
+  setup() {
+    const formData = ref({
+      id: '',
+      name: '',
+      password: '',
+      sport: '',
+      creatTime: ''
+    })
+    return {
+      formData
+=======
   setup(props, { emit }) {
     //双向绑定的属性应该是由配置文件的filed来决定
     // 1.优化一: formData中的属性应该动态来决定
@@ -58,6 +70,7 @@ export default defineComponent({
       formData,
       handleResetClick,
       handleQueryClick
+>>>>>>> db77a8d3443ca4bd51753c383a101e5b638941f9
     }
   },
   components: {
@@ -66,7 +79,11 @@ export default defineComponent({
 })
 </script>
 
+<<<<<<< HEAD
+<style scoped>
+=======
 <style lang="less" scoped>
+>>>>>>> db77a8d3443ca4bd51753c383a101e5b638941f9
 .header {
   color: red;
 }
