@@ -18,6 +18,10 @@ class Classroom {
         }else{
           return {done: true, value: undefined }
         }
+      },
+      return: ()=>{
+        console.log('迭代器被终止了')
+        return { done: true, value: undefined }
       }
     }
     
@@ -31,4 +35,7 @@ let newRoom = new Classroom('aaa','111',['lily','lucy'])
 newRoom.entry('yummy')
 for(const item of newRoom){
   console.log(item)
+  if(item == 'lily'){
+    break
+  }
 }

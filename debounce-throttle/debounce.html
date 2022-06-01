@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <input type="text" />
+  <button class="cancel">取消</button>
+  <!-- <script src="./debounce-v1-基本实现.js"> </script> -->
+  <!-- <script src="./debounce-v2-this-参数.js"> </script> -->
+  <!-- <script src="./debounce-v3-立即执行.js"> </script> -->
+  <!-- <script src="./debounce-v4-取消功能.js" ></script> -->
+  <script src="./debounce-v5-函数返回.js" ></script>
+  <script>
+    const inputEl = document.querySelector('input') 
+    const btn = document.querySelector('.cancel')
+    let counter = 0 
+    const fn = function(event){
+      console.log(`${counter++} 次打印`)
+      console.log(this,event)
+      return "aaaaaaaaaaaa"
+    }
+    const debounceChange = debounce(fn,5000,true ,(res)=>{
+      console.log("拿到真正执行函数的返回值:", res)
+    })
+    const tempCallback = () => {
+      debounceChange().then(res => {
+        console.log("Promise的返回值结果:", res)
+      })
+    }
+    inputEl.oninput = debounceChange
+    // inputEl.oninput = tempCallback
+    btn.onclick = function(){
+      debounceChange.cancel()
+    }
+  </script>
+</body>
+</html>
