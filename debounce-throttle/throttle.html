@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <input type="text" />
+  <button class="cancel">取消</button>
+  <!-- <script src="./throttle-v1-基本实现.js"> </script> -->
+  <!-- <script src="./throttle-v2-leading实现.js"> </script> -->
+  <script src="./throttle-v3-traling实现.js"> </script>
+  <!-- <script src="./throttle-v4-取消功能.js" ></script> -->
+  <!-- <script src="./throttle-v5-函数返回.js" ></script> -->
+  <script>
+    const inputEl = document.querySelector('input') 
+    const btn = document.querySelector('.cancel')
+    let counter = 0 
+    const fn = function(event){
+      console.log(`${counter++} 次打印`)
+      console.log(this,event)
+      return "aaaaaaaaaaaa"
+    }
+    const throttleChange = throttle(fn,2000 ,{ leading: false, trailing: true })
+    // const tempCallback = () => {
+    //   throttleChange().then(res => {
+    //     console.log("Promise的返回值结果:", res)
+    //   })
+    // }
+    inputEl.oninput = throttleChange
+    // inputEl.oninput = tempCallback
+    btn.onclick = function(){
+      throttleChange.cancel()
+    }
+  </script>
+</body>
+</html>
