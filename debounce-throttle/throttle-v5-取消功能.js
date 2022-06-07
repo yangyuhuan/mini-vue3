@@ -2,7 +2,7 @@ function throttle(fn,delay,options = { leading: true, trailing: false }){
   let lastTime = 0
   let timer = null
   let {leading , trailing} = options
-  const _throttle = function(){
+  const _throttle = function(...args){
     let nowTime = new Date().getTime()
     if(lastTime == 0 && !leading){
       lastTime = nowTime
@@ -13,7 +13,7 @@ function throttle(fn,delay,options = { leading: true, trailing: false }){
         clearTimeout(timer)
         timer = null
       }
-      fn()
+      fn.apply(this,args)
       lastTime = nowTime
       return 
     }
@@ -22,10 +22,16 @@ function throttle(fn,delay,options = { leading: true, trailing: false }){
         timer = setTimeout(()=> {
           timer = null
           lastTime = !leading ? 0: new Date().getTime()
-          fn()
+          fn.apply(this,args)
         },remainTime)
   
       }
+  }
+
+  _throttle.cancel = function(){
+    if(timer) clearTimeout(timer)
+    timer = null
+    lastTime = 0
   }
 
   return _throttle
