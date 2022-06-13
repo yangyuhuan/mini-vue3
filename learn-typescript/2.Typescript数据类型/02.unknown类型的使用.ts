@@ -18,5 +18,6 @@ if(flag){
 }
 
 let message: string = result
-let num: number = result
+//let num: number = result
+let num: unknown = result
 export {}
