@@ -31,3 +31,4 @@ function makeActions(animals: Animal[]) {
 makeActions([new Dog(), new Fish(), new Person()])
 
 export {}
+
